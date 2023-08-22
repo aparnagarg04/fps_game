@@ -174,74 +174,74 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 }
 
         `);
-        shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>',
-          `
-          #include <emissivemap_fragment>
+        // shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>',
+        //   `
+        //   #include <emissivemap_fragment>
   
-          float size = 1.0;
-          vec2 posXY = mod(floor(vWorldPosition.xy / size), size);  
-          vec2 posXZ = mod(floor(vWorldPosition.xz / size), 10.0);  
-          vec2 posYZ = mod(floor(vWorldPosition.yz), 1.0);
+        //   float size = 1.0;
+        //   vec2 posXY = mod(floor(vWorldPosition.xy / size), size);  
+        //   vec2 posXZ = mod(floor(vWorldPosition.xz / size), 10.0);  
+        //   vec2 posYZ = mod(floor(vWorldPosition.yz), 1.0);
   
-          vec3 weights = abs(vWorldNormal.xyz);
-          weights /= dot(weights, vec3(1.0));
+        //   vec3 weights = abs(vWorldNormal.xyz);
+        //   weights /= dot(weights, vec3(1.0));
 
-          // vec2 coords1 = vWorldPosition.xy / size;
-          // vec2 coords2 = vWorldPosition.xz / size;
-          // vec2 coords3 = vWorldPosition.yz / size;
-          // vec3 diffuseColor1 = mapTexelToLinear(texture(map, coords1)).xyz;
-          // vec3 diffuseColor2 = mapTexelToLinear(texture(map, coords2)).xyz;
-          // vec3 diffuseColor3 = mapTexelToLinear(texture(map, coords3)).xyz;
+        //   // vec2 coords1 = vWorldPosition.xy / size;
+        //   // vec2 coords2 = vWorldPosition.xz / size;
+        //   // vec2 coords3 = vWorldPosition.yz / size;
+        //   // vec3 diffuseColor1 = mapTexelToLinear(texture(map, coords1)).xyz;
+        //   // vec3 diffuseColor2 = mapTexelToLinear(texture(map, coords2)).xyz;
+        //   // vec3 diffuseColor3 = mapTexelToLinear(texture(map, coords3)).xyz;
 
-          // diffuseColor.xyz = diffuseColor1 * weights.z + diffuseColor2 * weights.y + diffuseColor3 * weights.x;
+        //   // diffuseColor.xyz = diffuseColor1 * weights.z + diffuseColor2 * weights.y + diffuseColor3 * weights.x;
 
-          // {
-          //   vec3 mapN1 = texture(normalMap, coords1).xyz * 2.0 - 1.0;
-          //   vec3 mapN2 = texture(normalMap, coords2).xyz * 2.0 - 1.0;
-          //   vec3 mapN3 = texture(normalMap, coords3).xyz * 2.0 - 1.0;
-          //   vec3 mapN = normalize(mapN1 * weights.z + mapN2 * weights.y + mapN3 * weights.x);
+        //   // {
+        //   //   vec3 mapN1 = texture(normalMap, coords1).xyz * 2.0 - 1.0;
+        //   //   vec3 mapN2 = texture(normalMap, coords2).xyz * 2.0 - 1.0;
+        //   //   vec3 mapN3 = texture(normalMap, coords3).xyz * 2.0 - 1.0;
+        //   //   vec3 mapN = normalize(mapN1 * weights.z + mapN2 * weights.y + mapN3 * weights.x);
   
-          //   normal = normalize( vNormal );
-          //   normal = perturbNormal2Arb( -vViewPosition, normal, mapN, faceDirection );
-          // }
+        //   //   normal = normalize( vNormal );
+        //   //   normal = perturbNormal2Arb( -vViewPosition, normal, mapN, faceDirection );
+        //   // }
 
-          float maxWeight = max(weights.x, max(weights.y, weights.z));
+        //   float maxWeight = max(weights.x, max(weights.y, weights.z));
 
-          vec2 coords;
-          if (maxWeight == weights.z) {
-            coords = vWorldPosition.xy / size;
-          } else if (maxWeight == weights.y) {
-            coords = vWorldPosition.xz / size;
-          } else {
-            coords = vWorldPosition.yz / size;
-          }
+        //   vec2 coords;
+        //   if (maxWeight == weights.z) {
+        //     coords = vWorldPosition.xy / size;
+        //   } else if (maxWeight == weights.y) {
+        //     coords = vWorldPosition.xz / size;
+        //   } else {
+        //     coords = vWorldPosition.yz / size;
+        //   }
 
-          diffuseColor.xyz = mapTexelToLinear(texture(map, coords)).xyz;
-          // metalnessFactor = texture(metalnessMap, coords).x;
-          // roughnessFactor = texture(roughnessMap, coords).x;
+        //   diffuseColor.xyz = mapTexelToLinear(texture(map, coords)).xyz;
+        //   // metalnessFactor = texture(metalnessMap, coords).x;
+        //   // roughnessFactor = texture(roughnessMap, coords).x;
 
-          // {
-          //   vec3 mapN = texture2D( normalMap, coords ).xyz * 2.0 - 1.0;
-          //   normal = normalize( vNormal );
-          //   normal = perturbNormal2Arb( -vViewPosition, normal, mapN, faceDirection );
-          //   // oop
-          // }
-          // diffuseColor.xyz = colXY * weights.z + colXZ * weights.y + colYZ * weights.x;
-          // diffuseColor.xyz = vec3(1.0);
+        //   // {
+        //   //   vec3 mapN = texture2D( normalMap, coords ).xyz * 2.0 - 1.0;
+        //   //   normal = normalize( vNormal );
+        //   //   normal = perturbNormal2Arb( -vViewPosition, normal, mapN, faceDirection );
+        //   //   // oop
+        //   // }
+        //   // diffuseColor.xyz = colXY * weights.z + colXZ * weights.y + colYZ * weights.x;
+        //   // diffuseColor.xyz = vec3(1.0);
 
-          metalnessFactor = 0.1 * (1.0 - diffuseColor.x);
-          roughnessFactor = diffuseColor.x * 0.5;
+        //   metalnessFactor = 0.1 * (1.0 - diffuseColor.x);
+        //   roughnessFactor = diffuseColor.x * 0.5;
 
-          vec4 t = noised(floor(vWorldPosition.xyz / size) * 23.926325 + vec3(0.2));
-          vec3 c1 = pal( t.x, vec3(0.5,0.5,0.5),vec3(0.5,0.5,0.5),vec3(1.0,1.0,1.0),vec3(0.0,0.33,0.67) );
+        //   vec4 t = noised(floor(vWorldPosition.xyz / size) * 23.926325 + vec3(0.2));
+        //   vec3 c1 = pal( t.x, vec3(0.5,0.5,0.5),vec3(0.5,0.5,0.5),vec3(1.0,1.0,1.0),vec3(0.0,0.33,0.67) );
 
-          diffuseColor.xyz *= mix(0.25, 0.5, t.x);
+        //   diffuseColor.xyz *= mix(0.25, 0.5, t.x);
 
-          t = noised(floor(vWorldPosition.xyz / size) * 37.8953326 + vec3(0.05 * iTime));
-          totalEmissiveRadiance += smoothstep(0.3, 0.31, t.x) * c1 * 0.25;
-          diffuseColor.a = smoothstep(50.0, 0.0, fogDepth) * smoothstep(0.3, 0.31, t.x) * 0.5;
+        //   t = noised(floor(vWorldPosition.xyz / size) * 37.8953326 + vec3(0.05 * iTime));
+        //   totalEmissiveRadiance += smoothstep(0.3, 0.31, t.x) * c1 * 0.25;
+        //   diffuseColor.a = smoothstep(50.0, 0.0, fogDepth) * smoothstep(0.3, 0.31, t.x) * 0.5;
 
-        `);
+        // `);
         material.userData.shader = shader;
       };
   
