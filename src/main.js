@@ -9,11 +9,12 @@ import {threejs_component} from './threejs-component.js';
 import {ammojs_component} from './ammojs-component.js';
 import {blaster} from './fx/blaster.js';
 import {ui_controller} from './ui-controller.js';
+import * as THREE from "three";
 
 
 class QuickFPS1 {
   constructor() {
-    this._Initialize();
+  this._Initialize();
   }
 
   _Initialize() {
@@ -81,6 +82,9 @@ class QuickFPS1 {
     spawner.GetComponent('Level1Spawner').Spawn();
   }
 
+  
+
+
   RAF_() {
     requestAnimationFrame((t) => {
       if (this.previousRAF_ === null) {
@@ -104,6 +108,8 @@ class QuickFPS1 {
     this.ammojs_.StepSimulation(timeElapsedS);
     this.threejs_.Render(timeElapsedS);
   }
+
+  
 }
 
 

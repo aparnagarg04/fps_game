@@ -11,6 +11,8 @@ import {RadialBlurShader} from './radial-blur.js';
 import {entity} from "./entity.js";
 
 
+
+
 export const threejs_component = (() => {
 
   const _SKY_VS = `
@@ -75,6 +77,7 @@ export const threejs_component = (() => {
   class ThreeJSController extends entity.Component {
     constructor() {
       super();
+      
     }
 
     InitEntity() {
@@ -97,6 +100,17 @@ export const threejs_component = (() => {
       window.addEventListener('resize', () => {
         this.onWindowResize_();
       }, false);
+
+
+      if (this.threejs_.xr) {
+        this.camera_ = new THREE.PerspectiveCamera();
+        this.camera_.matrixAutoUpdate = false;
+        // Adjust camera settings for VR
+      } else {
+        this.camera_ = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        // ...
+      }
+
 
       const fov = 60;
       const aspect = 1920 / 1080;
