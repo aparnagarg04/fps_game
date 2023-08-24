@@ -10,7 +10,7 @@ import {RadialBlurShader} from './radial-blur.js';
 
 import {entity} from "./entity.js";
 
-
+import { VRButton } from 'three/addons/webxr/VRButton.js';
 
 
 export const threejs_component = (() => {
@@ -86,6 +86,7 @@ export const threejs_component = (() => {
       this.threejs_ = new THREE.WebGLRenderer({
         antialias: false,
       });
+      this.threejs_.xr.enabled = true;
       this.threejs_.shadowMap.enabled = true;
       this.threejs_.shadowMap.type = THREE.PCFSoftShadowMap;
       this.threejs_.setPixelRatio(window.devicePixelRatio);
@@ -96,20 +97,13 @@ export const threejs_component = (() => {
       // this.threejs_.toneMappingExposure = 1.0;
   
       document.getElementById('container').appendChild(this.threejs_.domElement);
+      document.body.appendChild( VRButton.createButton( this.threejs_ ) );
   
       window.addEventListener('resize', () => {
         this.onWindowResize_();
       }, false);
 
 
-      if (this.threejs_.xr) {
-        this.camera_ = new THREE.PerspectiveCamera();
-        this.camera_.matrixAutoUpdate = false;
-        // Adjust camera settings for VR
-      } else {
-        this.camera_ = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        // ...
-      }
 
 
       const fov = 60;
@@ -258,6 +252,9 @@ export const threejs_component = (() => {
 
       this.LoadBackground_();
       this.onWindowResize_();
+
+      
+
     }
 
     LoadBackground_() {
@@ -350,8 +347,11 @@ export const threejs_component = (() => {
       this.swapBuffers_();
 
       this.gammaPass_.renderToScreen = true;
+     
       this.gammaPass_.render(this.threejs_, this.writeBuffer_, this.readBuffer_, timeElapsedS, false);
-
+      this.threejs_.render(this.scene_,this.camera_);
+      
+      
       // pass.renderToScreen = this.renderToScreen && this.isLastEnabledPass(i);
       // pass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime, maskActive);
 

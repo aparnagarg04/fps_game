@@ -82,9 +82,8 @@ class QuickFPS1 {
     spawner.GetComponent('Level1Spawner').Spawn();
   }
 
+
   
-
-
   RAF_() {
     requestAnimationFrame((t) => {
       if (this.previousRAF_ === null) {
